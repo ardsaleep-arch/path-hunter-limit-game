@@ -1,0 +1,1859 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Path Hunter: ทลายลิมิตพิชิตจุดกำเนิด</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=STIX+Two+Math&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-alt: #1e293b;
+      --surface: #1e293b;
+      --surface-elevated: #283548;
+      --border: #334155;
+      --border-light: #475569;
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --brand: #38bdf8;
+      --brand-hover: #0ea5e9;
+      --brand-ink: #0f172a;
+      --accent: #a855f7;
+      --accent-soft: rgba(168, 85, 247, 0.15);
+      --success: #22c55e;
+      --success-soft: rgba(34, 197, 94, 0.15);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.15);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 8px 10px -6px rgba(0, 0, 0, 0.25);
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --font: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --math-font: 'STIX Two Math', 'Cambria Math', 'Times New Roman', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #1e1b4b 0%, var(--bg) 55%);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+
+    /* Header */
+    .app-header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: var(--space-3) var(--space-6);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.35);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-subtitle {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hud-stats {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .stat-pill .val {
+      color: var(--brand);
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .btn {
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: var(--brand-ink);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--brand-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface-elevated);
+      color: var(--ink);
+      border-color: var(--border-light);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #334155;
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .btn-accent:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Main Layout */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    @media (min-width: 960px) {
+      .container {
+        grid-template-columns: 320px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Sidebar / Tier Selector & Guide */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      margin: 0 0 var(--space-3) 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tier-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tier-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .tier-btn:hover {
+      border-color: var(--brand);
+    }
+
+    .tier-btn.active {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+      gap: 6px;
+      margin-top: var(--space-3);
+    }
+
+    .stage-chip {
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .stage-chip:hover {
+      border-color: var(--brand);
+      color: var(--ink);
+    }
+
+    .stage-chip.current {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: var(--brand-ink);
+    }
+
+    .stage-chip.solved {
+      border-color: var(--success);
+      background: var(--success-soft);
+      color: #4ade80;
+    }
+
+    .stage-chip.solved.current {
+      background: var(--success);
+      color: #052e16;
+    }
+
+    /* Boss Arena */
+    .arena {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .boss-card {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: var(--space-6);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .boss-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .tier-1 { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+    .tier-2 { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+    .tier-3 { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
+    .tier-4 { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.35); }
+
+    .boss-name {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .boss-desc {
+      margin: 4px 0 0 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Math Formula Box */
+    .math-display {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-6) var(--space-4);
+      margin: var(--space-4) 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      font-family: var(--math-font);
+      font-size: 1.65rem;
+      color: #fff;
+      overflow-x: auto;
+    }
+
+    .math-expr {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lim-block {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.1;
+      font-size: 1.3rem;
+    }
+
+    .lim-sub {
+      font-size: 0.78rem;
+      color: var(--brand);
+      margin-top: 2px;
+      font-family: var(--math-font);
+    }
+
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .frac-num {
+      padding: 0 10px 4px 10px;
+      border-bottom: 2px solid #cbd5e1;
+      width: 100%;
+    }
+
+    .frac-den {
+      padding: 4px 10px 0 10px;
+      width: 100%;
+    }
+
+    /* Path Deployment Slots */
+    .battle-zone {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    @media (min-width: 680px) {
+      .battle-zone {
+        grid-template-columns: 1fr auto 1fr;
+        align-items: stretch;
+      }
+    }
+
+    .slot-card {
+      background: rgba(30, 41, 59, 0.75);
+      border: 2px dashed var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 150px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .slot-card.active-slot {
+      border-color: var(--brand);
+      background: rgba(56, 189, 248, 0.07);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    }
+
+    .slot-card.filled {
+      border-style: solid;
+      border-color: #64748b;
+      background: var(--surface-elevated);
+    }
+
+    .slot-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .slot-body {
+      margin: var(--space-3) 0;
+      text-align: center;
+    }
+
+    .slot-path-title {
+      font-family: var(--math-font);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .slot-path-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .slot-result {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+    }
+
+    .slot-result-val {
+      font-family: var(--math-font);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--brand);
+    }
+
+    .vs-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 800;
+      color: var(--muted);
+      padding: var(--space-2);
+    }
+
+    .vs-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: var(--surface-elevated);
+      border: 2px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--math-font);
+      font-size: 1.2rem;
+      color: var(--ink);
+    }
+
+    .vs-circle.diff {
+      background: var(--success-soft);
+      border-color: var(--success);
+      color: #4ade80;
+    }
+
+    .vs-circle.same {
+      background: var(--warning-soft);
+      border-color: var(--warning);
+      color: #fbbf24;
+    }
+
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border);
+    }
+
+    .action-left, .action-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    /* Hand of Path Cards */
+    .deck-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-6);
+      box-shadow: var(--shadow);
+    }
+
+    .deck-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .path-card {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+      cursor: pointer;
+      transition: all 0.16s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 108px;
+      text-align: left;
+      position: relative;
+      font-family: var(--font);
+      color: var(--ink);
+    }
+
+    .path-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--brand);
+      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.18);
+    }
+
+    .path-card.selected {
+      border-color: var(--brand);
+      background: rgba(56, 189, 248, 0.12);
+      box-shadow: 0 0 0 2px var(--brand);
+    }
+
+    .path-card.curve-card {
+      border-left: 4px solid var(--warning);
+    }
+
+    .path-card.line-card {
+      border-left: 4px solid var(--brand);
+    }
+
+    .path-card.space-card {
+      border-left: 4px solid var(--accent);
+    }
+
+    .card-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-formula {
+      font-family: var(--math-font);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 6px 0;
+      color: #fff;
+    }
+
+    .card-hint {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    /* Feedback / Combat Log Banner */
+    .feedback-box {
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      margin-top: var(--space-4);
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      display: none;
+    }
+
+    .feedback-box.show {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback-box.win {
+      border-color: var(--success);
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(15, 23, 42, 0.95));
+    }
+
+    .feedback-box.trap {
+      border-color: var(--warning);
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.95));
+    }
+
+    .feedback-box.lose {
+      border-color: var(--danger);
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.95));
+    }
+
+    .feedback-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin: 0 0 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-detail {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    .bonus-pill {
+      display: inline-block;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-left: 8px;
+    }
+
+    /* Modal for Rules / Squeeze Shield */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      max-width: 680px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: var(--space-6);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .rule-list {
+      margin: 0;
+      padding-left: 20px;
+      color: #cbd5e1;
+      font-size: 0.92rem;
+    }
+
+    .rule-list li {
+      margin-bottom: 8px;
+    }
+
+    .shield-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: var(--space-4) 0;
+    }
+
+    .shield-opt-btn {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: 0.92rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .shield-opt-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-badge">PH</div>
+        <div>
+          <h1 class="brand-title">Path Hunter: ทลายลิมิตพิชิตจุดกำเนิด</h1>
+          <p class="brand-subtitle">มินิเกมฝึกการทดสอบสองเส้นทาง (Two-Path Test) ของฟังก์ชันหลายตัวแปร</p>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-pill">
+          <span>ด่านที่เคลียร์:</span>
+          <span class="val" id="solvedCount">0 / 18</span>
+        </div>
+        <div class="stat-pill">
+          <span>คะแนนรวม:</span>
+          <span class="val" id="totalScore">0</span>
+        </div>
+        <button class="btn btn-secondary" id="openRulesBtn" type="button">คู่มือ & ทฤษฎีบท</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="panel">
+        <h2 class="panel-title">
+          <span>เลือกหมวดหมู่บอส (Tier)</span>
+        </h2>
+        <div class="tier-tabs" id="tierTabs">
+          <button type="button" class="tier-btn active" data-tier="all">
+            <span>ทั้งหมด (18 ด่าน)</span>
+            <span id="badgeAll">0/18</span>
+          </button>
+          <button type="button" class="tier-btn" data-tier="1">
+            <span>Tier 1: มินเนี่ยนเส้นตรง (ตอน ก)</span>
+            <span id="badgeT1">0/6</span>
+          </button>
+          <button type="button" class="tier-btn" data-tier="2">
+            <span>Tier 2: บอสพรางตัวเส้นโค้ง (ตอน ข)</span>
+            <span id="badgeT2">0/5</span>
+          </button>
+          <button type="button" class="tier-btn" data-tier="3">
+            <span>Tier 3: บอส 3 มิติ (ตอน ค)</span>
+            <span id="badgeT3">0/3</span>
+          </button>
+          <button type="button" class="tier-btn" data-tier="4">
+            <span>Tier 4: ด่านท้าทาย & การ์ดลวง (ตอน ง)</span>
+            <span id="badgeT4">0/4</span>
+          </button>
+        </div>
+
+        <div class="stage-grid" id="stageGrid" aria-label="รายการด่าน"></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">เคล็ดลับนักล่าเส้นทาง</h2>
+        <ul class="rule-list" style="padding-left: 18px; font-size: 0.84rem; margin:0;">
+          <li><strong>การทดสอบสองเส้นทาง:</strong> เลือกการ์ดเส้นทาง 2 ใบที่ทำให้ค่าลิมิต <strong>L₁ ≠ L₂</strong> เพื่อพิสูจน์ว่าลิมิตไม่มีค่า</li>
+          <li><strong>Degree Matcher (โบนัส x2):</strong> สังเกตดีกรีของพจน์ในตัวส่วน เช่น <em>x⁴ + y²</em> หากเลือก <em>y = x²</em> จะทำให้ดีกรีเป็น 4 เท่ากันและตัดทอนได้!</li>
+          <li><strong>ระวังการ์ดลวง (Mimic):</strong> ในตอน ง มีบางข้อที่<strong>ลิมิตมีค่าจริง</strong> ให้กดใช้ปุ่ม <strong>Squeeze Shield</strong> เพื่อจับผิด!</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Game Arena -->
+    <section class="arena">
+      <!-- Boss Card -->
+      <div class="boss-card">
+        <div class="boss-header">
+          <div>
+            <span class="tier-badge tier-1" id="bossTierBadge">Tier 1</span>
+            <h2 class="boss-name" id="bossTitle">ข้อ 1: มินเนี่ยนสมมาตร</h2>
+            <p class="boss-desc" id="bossDesc">จงหาคู่เส้นทางที่เข้าสู่จุดที่กำหนดแล้วให้ค่าลิมิตต่างกัน</p>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.8rem; color: var(--muted);">รางวัลประจำด่าน</span>
+            <div style="font-size: 1.2rem; font-weight: 800; color: var(--brand);" id="bossReward">+100 PTS</div>
+          </div>
+        </div>
+
+        <!-- Math Formula Display -->
+        <div class="math-display" id="mathDisplay"></div>
+
+        <!-- Two-Path Slots -->
+        <div class="battle-zone">
+          <!-- Slot 1 -->
+          <div class="slot-card active-slot" id="slot1" tabindex="0" role="button" aria-label="ช่องเส้นทางที่ 1">
+            <div class="slot-header">
+              <span>เส้นทางที่ 1 (C₁)</span>
+              <span id="slot1Status">คลิกเลือกการ์ดด้านล่าง</span>
+            </div>
+            <div class="slot-body" id="slot1Body">
+              <div class="slot-path-title" style="color: var(--muted);">— ยังไม่ได้เลือก —</div>
+              <div class="slot-path-desc">เลือกการ์ดเส้นทางใบที่ 1</div>
+            </div>
+            <div class="slot-result">
+              <span>ค่าลิมิต L₁:</span>
+              <span class="slot-result-val" id="slot1Limit">?</span>
+            </div>
+          </div>
+
+          <!-- VS Circle -->
+          <div class="vs-divider">
+            <div class="vs-circle" id="vsSymbol">VS</div>
+            <span style="font-size: 0.75rem;" id="vsText">เปรียบเทียบ</span>
+          </div>
+
+          <!-- Slot 2 -->
+          <div class="slot-card" id="slot2" tabindex="0" role="button" aria-label="ช่องเส้นทางที่ 2">
+            <div class="slot-header">
+              <span>เส้นทางที่ 2 (C₂)</span>
+              <span id="slot2Status">รอเลือกการ์ด</span>
+            </div>
+            <div class="slot-body" id="slot2Body">
+              <div class="slot-path-title" style="color: var(--muted);">— ยังไม่ได้เลือก —</div>
+              <div class="slot-path-desc">เลือกการ์ดเส้นทางใบที่ 2</div>
+            </div>
+            <div class="slot-result">
+              <span>ค่าลิมิต L₂:</span>
+              <span class="slot-result-val" id="slot2Limit">?</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Combat Feedback -->
+        <div class="feedback-box" id="feedbackBox" role="status" aria-live="polite">
+          <h3 class="feedback-title" id="feedbackTitle"></h3>
+          <p class="feedback-detail" id="feedbackDetail"></p>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <div class="action-left">
+            <button type="button" class="btn btn-primary" id="evaluateBtn" disabled>
+              ⚡ ประลองค่าลิมิต (ทดสอบ L₁ ≠ L₂)
+            </button>
+            <button type="button" class="btn btn-accent" id="squeezeBtn">
+              🛡️ ใช้การ์ด Squeeze Shield (ลิมิตมีค่า!)
+            </button>
+            <button type="button" class="btn btn-secondary" id="clearSlotsBtn">
+              ล้างช่องการ์ด
+            </button>
+          </div>
+          <div class="action-right">
+            <button type="button" class="btn btn-secondary" id="hintBtn">💡 ดูคำใบ้</button>
+            <button type="button" class="btn btn-secondary" id="nextStageBtn">ด่านถัดไป →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Hand: Path Cards -->
+      <div class="deck-section">
+        <div class="deck-header">
+          <div>
+            <h3 class="panel-title" style="margin:0;">สำรับการ์ดเส้นทางเดิน (Path Cards)</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.82rem; color: var(--muted);">
+              คลิกที่การ์ดเพื่อวางลงในช่องที่เลือกไว้ (สีฟ้าคือเส้นตรง, สีส้มคือเส้นโค้งดีกรีสูง, สีม่วงคือ 3 มิติ)
+            </p>
+          </div>
+        </div>
+        <div class="cards-grid" id="cardsGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal: Squeeze Shield Verification -->
+  <div class="modal-backdrop" id="shieldModal" role="dialog" aria-modal="true" aria-labelledby="shieldModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="shieldModalTitle">🛡️ Squeeze Shield: พิสูจน์ว่าลิมิตมีค่าจริง</h3>
+        <button type="button" class="btn btn-secondary" id="closeShieldModalBtn">ปิด</button>
+      </div>
+      <p style="margin-top:0; color: var(--muted); font-size: 0.92rem;">
+        คุณกำลังประกาศว่าฟังก์ชันในด่านนี้ <strong>เป็นบอสตัวปลอม (มีค่าลิมิตจริง)</strong>! โปรดเลือกเหตุผลทางคณิตศาสตร์ที่ถูกต้องเพื่อยืนยัน:
+      </p>
+      <div class="shield-options" id="shieldOptions"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Theory & Rules -->
+  <div class="modal-backdrop" id="rulesModal" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="rulesModalTitle">📖 ทบทวนหลักการ: การแสดงว่าลิมิตไม่มีค่า</h3>
+        <button type="button" class="btn btn-secondary" id="closeRulesModalBtn">เข้าใจแล้ว</button>
+      </div>
+      <div style="font-size: 0.92rem; color: #e2e8f0; line-height: 1.6;">
+        <p><strong>ทฤษฎีบท (การทดสอบสองเส้นทาง - Two-Path Test):</strong><br>
+        ถ้า <em>f(x, y) → L₁</em> เมื่อ <em>(x, y) → (a, b)</em> ตามเส้นโค้ง <em>C₁</em> และ <em>f(x, y) → L₂</em> ตามเส้นโค้ง <em>C₂</em> โดยที่ <strong>L₁ ≠ L₂</strong> แล้ว ลิมิตของ <em>f(x, y)</em> เมื่อเข้าใกล้ <em>(a, b)</em> <strong>ไม่มีค่า</strong></p>
+
+        <p><strong>เส้นทางที่นิยมใช้ (เมื่อ (a, b) = (0, 0)):</strong></p>
+        <ul class="rule-list">
+          <li><strong>แกนพิกัด:</strong> แกน x (<em>y = 0</em>) และแกน y (<em>x = 0</em>)</li>
+          <li><strong>เส้นตรง <em>y = mx</em>:</strong> ถ้าผลลัพธ์ขึ้นกับความชัน <em>m</em> แสดงว่าเลือก <em>m</em> สองค่าจะให้ลิมิตต่างกัน</li>
+          <li><strong>เส้นโค้ง <em>y = kx²</em>, <em>x = ky²</em>, <em>x = y³</em>, <em>y = x³</em>:</strong> เลือกให้ทุกพจน์ในตัวส่วนมีดีกรีเท่ากัน (ได้โบนัส <strong>Degree Matcher x2</strong> ในเกม!)</li>
+          <li><strong>สำหรับสามตัวแปร:</strong> แกนพิกัด x, y, z และเส้นตรงทแยงมุม <em>x = y = z</em></li>
+        </ul>
+
+        <p style="background: rgba(245, 158, 11, 0.12); border-left: 4px solid var(--warning); padding: 10px 14px; border-radius: 6px;">
+          <strong>ข้อควรระวังสำคัญ:</strong> การได้ค่าลิมิตเท่ากันตามเส้นทางหลายเส้น (แม้ทุกเส้นตรง <em>y = mx</em>) <strong>ไม่ได้พิสูจน์ว่าลิมิตมีค่า!</strong> การพิสูจน์ว่ามีค่าต้องใช้ทฤษฎีบทบีบ (Squeeze Theorem) หรือการจัดรูปพีชคณิตบนโดเมน
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Complete dataset derived strictly from uploaded limit-dne-exercises.pdf
+    const PROBLEMS = [
+      {
+        id: "ex1",
+        code: "ข้อ 1",
+        tier: 1,
+        tierLabel: "ตอน ก: เส้นตรงผ่านจุด",
+        title: "ข้อ 1: สมมาตรกำลังสอง",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "xy",
+        denominator: "x² + y²",
+        dne: true,
+        points: 100,
+        degreeMatchPaths: ["y=x", "y=-x", "y=2x"],
+        hint: "ลองแทนค่าตามแกนพิกัด y = 0 เทียบกับเส้นตรง y = x (ตาม y = mx จะได้ m / (1 + m²))",
+        explain: "ตามแกน x (y = 0) ได้ลิมิต 0 แต่ตามเส้นตรง y = x ได้ลิมิต 1/2 (โดยทั่วไปตาม y = mx ได้ m/(1+m²)) เนื่องจากค่าต่างกัน ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / x² = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y² = 0 → 0" },
+          "y=x": { val: "1/2", work: "f(x, x) = x² / (2x²) = 1/2 → 1/2" },
+          "y=-x": { val: "-1/2", work: "f(x, -x) = -x² / (2x²) = -1/2 → -1/2" },
+          "y=2x": { val: "2/5", work: "f(x, 2x) = 2x² / (5x²) = 2/5 → 2/5" },
+          "y=x^2": { val: "0", work: "f(x, x²) = x³ / (x² + x⁴) = x / (1 + x²) → 0" }
+        }
+      },
+      {
+        id: "ex2",
+        code: "ข้อ 2",
+        tier: 1,
+        tierLabel: "ตอน ก: เส้นตรงผ่านจุด",
+        title: "ข้อ 2: ถ่วงน้ำหนักแกน x",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "3xy",
+        denominator: "2x² + y²",
+        dne: true,
+        points: 100,
+        degreeMatchPaths: ["y=x", "y=-x", "y=2x"],
+        hint: "ตามเส้นตรง y = mx จะได้ค่า 3m / (2 + m²) ลองเลือก y = 0 กับ y = x",
+        explain: "ตาม y = 0 ได้ลิมิต 0 และตาม y = x ได้ 3x² / (3x²) = 1 เนื่องจาก 0 ≠ 1 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / (2x²) = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y² = 0 → 0" },
+          "y=x": { val: "1", work: "f(x, x) = 3x² / (3x²) = 1 → 1" },
+          "y=-x": { val: "-1", work: "f(x, -x) = -3x² / (3x²) = -1 → -1" },
+          "y=2x": { val: "1", work: "f(x, 2x) = 6x² / (6x²) = 1 → 1" },
+          "y=x^2": { val: "0", work: "f(x, x²) = 3x³ / (2x² + x⁴) → 0" }
+        }
+      },
+      {
+        id: "ex3",
+        code: "ข้อ 3",
+        tier: 1,
+        tierLabel: "ตอน ก: เส้นตรงผ่านจุด",
+        title: "ข้อ 3: ผลบวกหารผลต่าง",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x + y",
+        denominator: "x − y",
+        dne: true,
+        points: 100,
+        degreeMatchPaths: ["y=0", "x=0", "y=2x"],
+        hint: "เทียบแกน x (y = 0) กับแกน y (x = 0) ได้เลย!",
+        explain: "ตามแกน x (y = 0) ได้ x/x = 1 แต่ตามแกน y (x = 0) ได้ y/(-y) = -1 (ตาม y = mx ได้ (1+m)/(1-m)) ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "1", work: "f(x, 0) = x / x = 1 → 1" },
+          "x=0": { val: "-1", work: "f(0, y) = y / (-y) = -1 → -1" },
+          "y=-x": { val: "0", work: "f(x, -x) = 0 / (2x) = 0 → 0" },
+          "y=2x": { val: "-3", work: "f(x, 2x) = 3x / (-x) = -3 → -3" },
+          "y=x^2": { val: "1", work: "f(x, x²) = (x + x²) / (x - x²) = (1 + x)/(1 - x) → 1" }
+        }
+      },
+      {
+        id: "ex4",
+        code: "ข้อ 4",
+        tier: 1,
+        tierLabel: "ตอน ก: เส้นตรงผ่านจุด",
+        title: "ข้อ 4: เศษกำลังสองเดี่ยว",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x²",
+        denominator: "x² + y²",
+        dne: true,
+        points: 100,
+        degreeMatchPaths: ["y=0", "x=0", "y=x"],
+        hint: "ลองเข้าตามแกน x (y = 0) เทียบกับแกน y (x = 0)",
+        explain: "ตามแกน x (y = 0) ได้ x²/x² = 1 แต่ตามแกน y (x = 0) ได้ 0/y² = 0 เนื่องจาก 1 ≠ 0 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "1", work: "f(x, 0) = x² / x² = 1 → 1" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y² = 0 → 0" },
+          "y=x": { val: "1/2", work: "f(x, x) = x² / (2x²) = 1/2 → 1/2" },
+          "y=-x": { val: "1/2", work: "f(x, -x) = x² / (2x²) = 1/2 → 1/2" },
+          "y=2x": { val: "1/5", work: "f(x, 2x) = x² / (5x²) = 1/5 → 1/5" }
+        }
+      },
+      {
+        id: "ex5",
+        code: "ข้อ 5",
+        tier: 1,
+        tierLabel: "ตอน ก: เส้นตรงผ่านจุด",
+        title: "ข้อ 5: จุดกำเนิดเลื่อนไปที่ (1, 0)",
+        limitPoint: "(x,y) → (1,0)",
+        numerator: "(x − 1)y",
+        denominator: "(x − 1)² + y²",
+        dne: true,
+        points: 120,
+        degreeMatchPaths: ["y=x-1"],
+        hint: "สังเกตว่าจุดเข้าใกล้คือ (1,0) ให้ใช้ u = x - 1 แล้วเลือกเส้นทาง y = 0 คู่กับเส้นตรง y = x - 1",
+        explain: "ให้ u = x - 1 จะเหมือนข้อ 1 เมื่อเข้าตาม y = 0 ได้ 0 แต่เข้าตามเส้นตรง y = x - 1 ได้ (x-1)² / 2(x-1)² = 1/2 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "0", work: "แทน y = 0 (เมื่อ x ≠ 1) ได้ 0 / (x-1)² = 0 → 0" },
+          "x=1": { val: "0", work: "แทน x = 1 (เมื่อ y ≠ 0) ได้ 0 / y² = 0 → 0" },
+          "y=x-1": { val: "1/2", work: "แทน y = x - 1 ได้ (x-1)² / [2(x-1)²] = 1/2 → 1/2" },
+          "y=-(x-1)": { val: "-1/2", work: "แทน y = -(x - 1) ได้ -(x-1)² / [2(x-1)²] = -1/2 → -1/2" }
+        }
+      },
+      {
+        id: "ex6",
+        code: "ข้อ 6",
+        tier: 1,
+        tierLabel: "ตอน ก: เส้นตรงผ่านจุด",
+        title: "ข้อ 6: ลิมิตตรีโกณมิติ sin(xy)",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "sin(xy)",
+        denominator: "x² + y²",
+        dne: true,
+        points: 120,
+        degreeMatchPaths: ["y=x", "y=-x", "y=2x"],
+        hint: "ใช้เอกลักษณ์ sin(u)/u → 1 เมื่อ u → 0 ลองเทียบเส้นทาง y = 0 กับ y = x",
+        explain: "ตาม y = 0 ได้ sin(0)/x² = 0 แต่ตาม y = mx ได้ sin(mx²) / [(1+m²)x²] → m / (1+m²) ดังนั้นที่ y = x จึงได้ 1/2",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = sin(0) / x² = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = sin(0) / y² = 0 → 0" },
+          "y=x": { val: "1/2", work: "f(x, x) = sin(x²) / (2x²) → 1/2" },
+          "y=-x": { val: "-1/2", work: "f(x, -x) = sin(-x²) / (2x²) → -1/2" },
+          "y=2x": { val: "2/5", work: "f(x, 2x) = sin(2x²) / (5x²) → 2/5" }
+        }
+      },
+      {
+        id: "ex7",
+        code: "ข้อ 7",
+        tier: 2,
+        tierLabel: "ตอน ข: เส้นโค้ง",
+        title: "ข้อ 7: บอสพรางตัวพาราโบลา",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x²y",
+        denominator: "x⁴ + y²",
+        dne: true,
+        points: 200,
+        degreeMatchPaths: ["y=x^2"],
+        hint: "ระวัง! ทุกเส้นตรง y = mx ให้ลิมิตเป็น 0 หมด ต้องเลือกเส้นโค้งที่ทำให้ตัวส่วน x⁴ + y² มีดีกรีเท่ากัน",
+        explain: "ตามเส้นตรง y = mx ได้ mx / (x² + m²) → 0 เสมอ แต่เมื่อเข้าตามพาราโบลา y = x² จะได้ x⁴ / (x⁴ + x⁴) = 1/2 เนื่องจาก 0 ≠ 1/2 ลิมิตจึงไม่มีค่า!",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / x⁴ = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y² = 0 → 0" },
+          "y=x": { val: "0", work: "ตามเส้นตรง y = x: x³ / (x⁴ + x²) = x / (x² + 1) → 0" },
+          "y=2x": { val: "0", work: "ตามเส้นตรง y = 2x: 2x³ / (x⁴ + 4x²) = 2x / (x² + 4) → 0" },
+          "y=x^2": { val: "1/2", work: "★ Degree Match! แทน y = x² ได้ x⁴ / (x⁴ + x⁴) = 1/2 → 1/2" },
+          "y=x^3": { val: "0", work: "แทน y = x³ ได้ x⁵ / (x⁴ + x⁶) = x / (1 + x²) → 0" }
+        }
+      },
+      {
+        id: "ex8",
+        code: "ข้อ 8",
+        tier: 2,
+        tierLabel: "ตอน ข: เส้นโค้ง",
+        title: "ข้อ 8: กำลังสามย้อนศร",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "xy³",
+        denominator: "x² + y⁶",
+        dne: true,
+        points: 200,
+        degreeMatchPaths: ["x=y^3"],
+        hint: "ตัวส่วนคือ x² + y⁶ ถ้าอยากให้ทั้งสองพจน์เป็น y⁶ เท่ากัน ต้องแทน x ด้วยอะไร?",
+        explain: "ตามเส้นตรง x = my ได้ my² / (m² + y⁴) → 0 ทุกเส้น แต่ตามเส้นโค้ง x = y³ ได้ y⁶ / (y⁶ + y⁶) = 1/2 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / x² = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y⁶ = 0 → 0" },
+          "y=x": { val: "0", work: "ตามเส้นตรง y = x: x⁴ / (x² + x⁶) = x² / (1 + x⁴) → 0" },
+          "x=y^2": { val: "0", work: "แทน x = y² ได้ y⁵ / (y⁴ + y⁶) = y / (1 + y²) → 0" },
+          "x=y^3": { val: "1/2", work: "★ Degree Match! แทน x = y³ ได้ y⁶ / (y⁶ + y⁶) = 1/2 → 1/2" }
+        }
+      },
+      {
+        id: "ex9",
+        code: "ข้อ 9",
+        tier: 2,
+        tierLabel: "ตอน ข: เส้นโค้ง",
+        title: "ข้อ 9: กำแพงดีกรีหก (เฉลยข้อ 17)",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x³y",
+        denominator: "x⁶ + y²",
+        dne: true,
+        points: 200,
+        degreeMatchPaths: ["y=x^3"],
+        hint: "แม้แต่พาราโบลา y = x² ก็ยังได้ 0! ดูตัวส่วน x⁶ + y² ต้องใช้เส้นโค้งกำลังสามใบไหน?",
+        explain: "ตามเส้นตรงได้ mx² / (x⁴ + m²) → 0 และตาม y = x² ก็ได้ x⁵ / (x⁶ + x⁴) → 0 แต่ตามเส้นโค้ง y = x³ ได้ x⁶ / (2x⁶) = 1/2 (นี่คือคำตอบของข้อ 17 ด้วย!)",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 → 0" },
+          "y=x": { val: "0", work: "ตามเส้นตรง y = x ได้ x⁴ / (x⁶ + x²) = x² / (x⁴ + 1) → 0" },
+          "y=x^2": { val: "0", work: "ตามพาราโบลา y = x² ได้ x⁵ / (x⁶ + x⁴) = x / (x² + 1) → 0" },
+          "y=x^3": { val: "1/2", work: "★ Degree Match! แทน y = x³ ได้ x⁶ / (x⁶ + x⁶) = 1/2 → 1/2" }
+        }
+      },
+      {
+        id: "ex10",
+        code: "ข้อ 10",
+        tier: 2,
+        tierLabel: "ตอน ข: เส้นโค้ง",
+        title: "ข้อ 10: ป้อมปราการกำลังสาม",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x⁴y⁴",
+        denominator: "(x² + y⁴)³",
+        dne: true,
+        points: 220,
+        degreeMatchPaths: ["x=y^2"],
+        hint: "ดูในวงเล็บตัวส่วน (x² + y⁴)³ ถ้าเลือก x = y² จะทำให้พจน์ในวงเล็บรวมกันเป็น 2y⁴",
+        explain: "ตามเส้นตรง y = mx ได้ 0 แต่ตามพาราโบลา x = y² จะได้ (y²)⁴y⁴ / (y⁴ + y⁴)³ = y¹² / (2y⁴)³ = 1/8 เนื่องจาก 0 ≠ 1/8 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / x⁶ = 0 → 0" },
+          "y=x": { val: "0", work: "ตาม y = x ได้ x⁸ / (x² + x⁴)³ = x² / (1 + x²)³ → 0" },
+          "y=x^2": { val: "0", work: "ตาม y = x² ได้ x¹² / (x² + x⁸)³ = x⁶ / (1 + x⁶)³ → 0" },
+          "x=y^2": { val: "1/8", work: "★ Degree Match! แทน x = y² ได้ y¹² / (2y⁴)³ = 1/8 → 1/8" }
+        }
+      },
+      {
+        id: "ex11",
+        code: "ข้อ 11",
+        tier: 2,
+        tierLabel: "ตอน ข: เส้นโค้ง",
+        title: "ข้อ 11: กับดักเส้นตรง y = x",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x²y²",
+        denominator: "x²y² + (x − y)²",
+        dne: true,
+        points: 200,
+        degreeMatchPaths: ["y=x"],
+        hint: "ตรวจสอบเส้นตรง y = mx อย่างระมัดระวัง! เมื่อ m ≠ 1 พจน์ (x - y)² ไม่เป็นศูนย์ แต่ถ้า y = x จะเกิดอะไรขึ้น?",
+        explain: "ตาม y = 0 (หรือ y = mx ที่ m ≠ 1) ได้ลิมิต 0 แต่บนเส้นตรง y = x พจน์ (x - y)² หายไปกลายเป็น 0 ทำให้ฟังก์ชันเท่ากับ x⁴ / x⁴ = 1 คงตัว!",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / x² = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y² = 0 → 0" },
+          "y=2x": { val: "0", work: "แทน y = 2x (m ≠ 1) ได้ 4x⁴ / (4x⁴ + x²) = 4x² / (4x² + 1) → 0" },
+          "y=-x": { val: "0", work: "แทน y = -x ได้ x⁴ / (x⁴ + 4x²) = x² / (x² + 4) → 0" },
+          "y=x": { val: "1", work: "★ จุดอ่อนบอส! บน y = x พจน์ (x-y)² = 0 จึงได้ x⁴ / x⁴ = 1 → 1" }
+        }
+      },
+      {
+        id: "ex12",
+        code: "ข้อ 12",
+        tier: 3,
+        tierLabel: "ตอน ค: ฟังก์ชันสามตัวแปร",
+        title: "ข้อ 12: ทรงกลมสามมิติ",
+        limitPoint: "(x,y,z) → (0,0,0)",
+        numerator: "x² + y² − z²",
+        denominator: "x² + y² + z²",
+        dne: true,
+        points: 250,
+        degreeMatchPaths: ["axis-x-3d", "axis-z-3d", "xyz-line"],
+        hint: "สำหรับ 3 ตัวแปร ลองเข้าตามแกน x (y=0, z=0) เทียบกับแกน z (x=0, y=0)",
+        explain: "ตามแกน x (y = z = 0) ได้ x²/x² = 1 แต่ตามแกน z (x = y = 0) ได้ -z²/z² = -1 เนื่องจาก 1 ≠ -1 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "axis-x-3d": { val: "1", work: "ตามแกน x (y=0, z=0): x² / x² = 1 → 1" },
+          "axis-y-3d": { val: "1", work: "ตามแกน y (x=0, z=0): y² / y² = 1 → 1" },
+          "axis-z-3d": { val: "-1", work: "ตามแกน z (x=0, y=0): -z² / z² = -1 → -1" },
+          "xyz-line": { val: "1/3", work: "ตามเส้นตรง x = y = z: (t² + t² - t²) / (3t²) = 1/3 → 1/3" }
+        }
+      },
+      {
+        id: "ex13",
+        code: "ข้อ 13",
+        tier: 3,
+        tierLabel: "ตอน ค: ฟังก์ชันสามตัวแปร",
+        title: "ข้อ 13: ผลคูณไขว้สามตัวแปร",
+        limitPoint: "(x,y,z) → (0,0,0)",
+        numerator: "xy + yz + zx",
+        denominator: "x² + y² + z²",
+        dne: true,
+        points: 250,
+        degreeMatchPaths: ["xyz-line"],
+        hint: "เทียบการเดินตามแกน x (y=0, z=0) กับเส้นตรงทแยงมุม x = y = z",
+        explain: "ตามแกน x (y = z = 0) ตัวเศษเป็น 0 จึงได้ลิมิต 0 แต่ตามเส้นตรง x = y = z = t ได้ 3t² / 3t² = 1 ลิมิตจึงไม่มีค่า",
+        paths: {
+          "axis-x-3d": { val: "0", work: "ตามแกน x (y=0, z=0): 0 / x² = 0 → 0" },
+          "axis-y-3d": { val: "0", work: "ตามแกน y (x=0, z=0): 0 / y² = 0 → 0" },
+          "axis-z-3d": { val: "0", work: "ตามแกน z (x=0, y=0): 0 / z² = 0 → 0" },
+          "xyz-line": { val: "1", work: "★ ตามเส้นตรง x = y = z = t: (t² + t² + t²) / (3t²) = 1 → 1" }
+        }
+      },
+      {
+        id: "ex14",
+        code: "ข้อ 14",
+        tier: 3,
+        tierLabel: "ตอน ค: ฟังก์ชันสามตัวแปร",
+        title: "ข้อ 14: บอสมิติกำลัง 3/2",
+        limitPoint: "(x,y,z) → (0,0,0)",
+        numerator: "xyz",
+        denominator: "(x² + y² + z²)³ᐟ²",
+        dne: true,
+        points: 250,
+        degreeMatchPaths: ["xyz-line"],
+        hint: "บนแกนพิกัดตัวเศษเป็น 0 ทันที ลองเทียบกับเส้นตรง x = y = z = t (เมื่อ t > 0)",
+        explain: "ตามแกน x ได้ 0 แต่ตามเส้นตรง x = y = z = t (t > 0) ได้ t³ / (3t²)³ᐟ² = 1 / (3√3) ลิมิตจึงไม่มีค่า",
+        paths: {
+          "axis-x-3d": { val: "0", work: "ตามแกน x (y=0, z=0): 0 / (x²)³ᐟ² = 0 → 0" },
+          "axis-y-3d": { val: "0", work: "ตามแกน y (x=0, z=0): 0 → 0" },
+          "axis-z-3d": { val: "0", work: "ตามแกน z (x=0, y=0): 0 → 0" },
+          "xyz-line": { val: "1/(3√3)", work: "★ ตาม x = y = z = t (t > 0): t³ / (3t²)³ᐟ² = 1 / (3√3)" }
+        }
+      },
+      {
+        id: "ex15a",
+        code: "ข้อ 15(ก)",
+        tier: 4,
+        tierLabel: "ตอน ง: โจทย์ท้าทาย",
+        title: "ข้อ 15(ก): ปริศนาดีกรีสี่เหนือดีกรีสอง",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x²y²",
+        denominator: "x² + y²",
+        dne: false,
+        trueLimit: "0",
+        points: 300,
+        degreeMatchPaths: [],
+        hint: "ลองลงการ์ดเส้นทางดูสิ... ทำไมได้ 0 ทุกเส้นเลย? นี่คือบอสตัวปลอม (Mimic) หรือเปล่า? ลองกดใช้ Squeeze Shield!",
+        explain: "ข้อนี้ลิมิตมีค่าเท่ากับ 0! เพราะ 0 ≤ x²y² / (x² + y²) ≤ y² (เนื่องจาก x²/(x²+y²) ≤ 1) แล้วใช้ทฤษฎีบทบีบ (Squeeze Theorem)",
+        shieldChoices: [
+          { text: "มีค่าเท่ากับ 0 เพราะ 0 ≤ x²y²/(x²+y²) ≤ y² แล้วใช้ทฤษฎีบทบีบ (Squeeze Theorem)", correct: true },
+          { text: "มีค่าเท่ากับ 1 เพราะตัดทอน x² กับ x² ได้โดยตรง", correct: false },
+          { text: "มีค่าเท่ากับ 0 เพราะตรวจเฉพาะแกน x กับแกน y ได้ 0 เท่ากันก็เพียงพอแล้ว", correct: false }
+        ],
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 → 0" },
+          "y=x": { val: "0", work: "f(x, x) = x⁴ / (2x²) = x² / 2 → 0" },
+          "y=x^2": { val: "0", work: "f(x, x²) = x⁶ / (x² + x⁴) = x⁴ / (1 + x²) → 0" },
+          "x=y^2": { val: "0", work: "f(y², y) = y⁶ / (y⁴ + y²) = y⁴ / (y² + 1) → 0" }
+        }
+      },
+      {
+        id: "ex15b",
+        code: "ข้อ 15(ข)",
+        tier: 4,
+        tierLabel: "ตอน ง: โจทย์ท้าทาย",
+        title: "ข้อ 15(ข): ดีกรีสามเหนือดีกรีสอง",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x²y",
+        denominator: "x² + y²",
+        dne: false,
+        trueLimit: "0",
+        points: 300,
+        degreeMatchPaths: [],
+        hint: "สังเกตว่า |x² / (x² + y²)| ≤ 1 เสมอ ลองกดใช้การ์ด Squeeze Shield เพื่อพิสูจน์ว่าลิมิตมีค่า!",
+        explain: "ข้อนี้ลิมิตมีค่าเท่ากับ 0! เพราะ |x²y / (x² + y²)| ≤ |y| เมื่อ (x,y) → (0,0) ค่าจึงบีบเข้าหา 0",
+        shieldChoices: [
+          { text: "มีค่าเท่ากับ 0 เพราะ |x²y / (x² + y²)| ≤ |y| และ |y| → 0 (ทฤษฎีบทบีบ)", correct: true },
+          { text: "มีค่าเท่ากับ 1/2 เพราะแทน y = x แล้วได้ 1/2", correct: false },
+          { text: "มีค่าเท่ากับ 0 เพราะตัวเศษมีตัวแปร y คูณอยู่จึงเป็น 0 เสมอทุกฟังก์ชัน", correct: false }
+        ],
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 → 0" },
+          "y=x": { val: "0", work: "f(x, x) = x³ / (2x²) = x / 2 → 0" },
+          "y=2x": { val: "0", work: "f(x, 2x) = 2x³ / (5x²) = 2x / 5 → 0" },
+          "y=x^2": { val: "0", work: "f(x, x²) = x⁴ / (x² + x⁴) = x² / (1 + x²) → 0" }
+        }
+      },
+      {
+        id: "ex15c",
+        code: "ข้อ 15(ค)",
+        tier: 4,
+        tierLabel: "ตอน ง: โจทย์ท้าทาย",
+        title: "ข้อ 15(ค): ผลบวกกำลังสาม",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x²y",
+        denominator: "x³ + y³",
+        dne: true,
+        points: 250,
+        degreeMatchPaths: ["y=x", "y=2x"],
+        hint: "ทั้งตัวเศษและตัวส่วนมีดีกรี 3 เท่ากัน! ลองทดสอบด้วยเส้นตรง y = 0 กับ y = x (ระวัง y = -x ไม่อยู่ในโดเมน)",
+        explain: "ไม่มีค่า! ตามเส้นตรง y = mx (เมื่อ m ≠ -1) ได้ m / (1 + m³) เช่น m = 0 (y = 0) ได้ 0 แต่ m = 1 (y = x) ได้ 1/2",
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = 0 / x³ = 0 → 0" },
+          "x=0": { val: "0", work: "f(0, y) = 0 / y³ = 0 → 0" },
+          "y=x": { val: "1/2", work: "★ แทน y = x ได้ x³ / (2x³) = 1/2 → 1/2" },
+          "y=2x": { val: "2/9", work: "★ แทน y = 2x ได้ 2x³ / (9x³) = 2/9 → 2/9" }
+        }
+      },
+      {
+        id: "ex15d",
+        code: "ข้อ 15(ง)",
+        tier: 4,
+        tierLabel: "ตอน ง: โจทย์ท้าทาย",
+        title: "ข้อ 15(ง): กับดักผลต่างกำลังสอง",
+        limitPoint: "(x,y) → (0,0)",
+        numerator: "x² − y²",
+        denominator: "x − y",
+        dne: false,
+        trueLimit: "0",
+        points: 300,
+        degreeMatchPaths: [],
+        hint: "ข้อนี้เตือนว่าตัวส่วนเป็นศูนย์บนเส้นหนึ่ง (x = y) ไม่ได้แปลว่าลิมิตไม่มีค่า! ลองแยกตัวประกอบบนโดเมน x ≠ y แล้วใช้ Squeeze Shield",
+        explain: "มีค่าเท่ากับ 0! เพราะบนโดเมน (x ≠ y) เราแยกตัวประกอบตัดทอนได้ f(x,y) = (x - y)(x + y)/(x - y) = x + y ซึ่งเข้าใกล้ 0 + 0 = 0",
+        shieldChoices: [
+          { text: "มีค่าเท่ากับ 0 เพราะบนโดเมน (x ≠ y) ฟังก์ชันจัดรูปได้เท่ากับ x + y → 0", correct: true },
+          { text: "ไม่มีค่า เพราะเมื่อแทน x = y จะได้ 0/0", correct: false },
+          { text: "มีค่าเท่ากับ 2 เพราะแยกตัวประกอบได้ 2x", correct: false }
+        ],
+        paths: {
+          "y=0": { val: "0", work: "f(x, 0) = x² / x = x → 0" },
+          "x=0": { val: "0", work: "f(0, y) = -y² / (-y) = y → 0" },
+          "y=-x": { val: "0", work: "f(x, -x) = 0 / (2x) = 0 → 0" },
+          "y=2x": { val: "0", work: "f(x, 2x) = -3x² / (-x) = 3x → 0" },
+          "y=x^2": { val: "0", work: "บนโดเมน x ≠ y: f(x, x²) = x + x² → 0" }
+        }
+      }
+    ];
+
+    // Path Card Catalog
+    const PATH_CARDS_META = {
+      "y=0": { formula: "y = 0", name: "แกน x (y = 0)", type: "line-card", tag: "เส้นตรง / แกน" },
+      "x=0": { formula: "x = 0", name: "แกน y (x = 0)", type: "line-card", tag: "เส้นตรง / แกน" },
+      "y=x": { formula: "y = x", name: "เส้นตรงความชัน m = 1", type: "line-card", tag: "เส้นตรง y = mx" },
+      "y=-x": { formula: "y = −x", name: "เส้นตรงความชัน m = −1", type: "line-card", tag: "เส้นตรง y = mx" },
+      "y=2x": { formula: "y = 2x", name: "เส้นตรงความชัน m = 2", type: "line-card", tag: "เส้นตรง y = mx" },
+      "x=1": { formula: "x = 1", name: "เส้นดิ่งผ่าน (1,0)", type: "line-card", tag: "เส้นตรงผ่าน (1,0)" },
+      "y=x-1": { formula: "y = x − 1", name: "เส้นตรงผ่าน (1,0) m = 1", type: "line-card", tag: "เส้นตรงผ่าน (1,0)" },
+      "y=-(x-1)": { formula: "y = −(x − 1)", name: "เส้นตรงผ่าน (1,0) m = −1", type: "line-card", tag: "เส้นตรงผ่าน (1,0)" },
+      "y=x^2": { formula: "y = x²", name: "พาราโบลาดีกรี 2", type: "curve-card", tag: "เส้นโค้งพาราโบลา" },
+      "x=y^2": { formula: "x = y²", name: "พาราโบลาตามแกน x", type: "curve-card", tag: "เส้นโค้งพาราโบลา" },
+      "y=x^3": { formula: "y = x³", name: "เส้นโค้งกำลังสาม", type: "curve-card", tag: "เส้นโค้งดีกรี 3" },
+      "x=y^3": { formula: "x = y³", name: "เส้นโค้งกำลังสามตาม y", type: "curve-card", tag: "เส้นโค้งดีกรี 3" },
+      "axis-x-3d": { formula: "แกน x (y=z=0)", name: "เข้าตามแกน x ใน 3 มิติ", type: "space-card", tag: "3 ตัวแปร" },
+      "axis-y-3d": { formula: "แกน y (x=z=0)", name: "เข้าตามแกน y ใน 3 มิติ", type: "space-card", tag: "3 ตัวแปร" },
+      "axis-z-3d": { formula: "แกน z (x=y=0)", name: "เข้าตามแกน z ใน 3 มิติ", type: "space-card", tag: "3 ตัวแปร" },
+      "xyz-line": { formula: "x = y = z", name: "เส้นตรงทแยงมุม 3 มิติ", type: "space-card", tag: "3 ตัวแปร" }
+    };
+
+    // Game State
+    let state = {
+      currentTierFilter: "all",
+      currentProblemIndex: 0,
+      activeSlot: 1, // 1 or 2
+      slot1Path: null,
+      slot2Path: null,
+      solvedIds: new Set(),
+      score: 0
+    };
+
+    // DOM Elements
+    const solvedCountEl = document.getElementById("solvedCount");
+    const totalScoreEl = document.getElementById("totalScore");
+    const tierTabsEl = document.getElementById("tierTabs");
+    const stageGridEl = document.getElementById("stageGrid");
+    const bossTierBadgeEl = document.getElementById("bossTierBadge");
+    const bossTitleEl = document.getElementById("bossTitle");
+    const bossDescEl = document.getElementById("bossDesc");
+    const bossRewardEl = document.getElementById("bossReward");
+    const mathDisplayEl = document.getElementById("mathDisplay");
+    const slot1El = document.getElementById("slot1");
+    const slot2El = document.getElementById("slot2");
+    const slot1StatusEl = document.getElementById("slot1Status");
+    const slot2StatusEl = document.getElementById("slot2Status");
+    const slot1BodyEl = document.getElementById("slot1Body");
+    const slot2BodyEl = document.getElementById("slot2Body");
+    const slot1LimitEl = document.getElementById("slot1Limit");
+    const slot2LimitEl = document.getElementById("slot2Limit");
+    const vsSymbolEl = document.getElementById("vsSymbol");
+    const vsTextEl = document.getElementById("vsText");
+    const feedbackBoxEl = document.getElementById("feedbackBox");
+    const feedbackTitleEl = document.getElementById("feedbackTitle");
+    const feedbackDetailEl = document.getElementById("feedbackDetail");
+    const evaluateBtn = document.getElementById("evaluateBtn");
+    const squeezeBtn = document.getElementById("squeezeBtn");
+    const clearSlotsBtn = document.getElementById("clearSlotsBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const nextStageBtn = document.getElementById("nextStageBtn");
+    const cardsGridEl = document.getElementById("cardsGrid");
+
+    // Modals
+    const shieldModal = document.getElementById("shieldModal");
+    const shieldOptionsEl = document.getElementById("shieldOptions");
+    const closeShieldModalBtn = document.getElementById("closeShieldModalBtn");
+    const rulesModal = document.getElementById("rulesModal");
+    const openRulesBtn = document.getElementById("openRulesBtn");
+    const closeRulesModalBtn = document.getElementById("closeRulesModalBtn");
+
+    function getCurrentProblem() {
+      return PROBLEMS[state.currentProblemIndex];
+    }
+
+    function updateHeaderAndBadges() {
+      solvedCountEl.textContent = `${state.solvedIds.size} / ${PROBLEMS.length}`;
+      totalScoreEl.textContent = state.score.toLocaleString();
+
+      const countSolvedInTier = (t) => PROBLEMS.filter(p => p.tier === t && state.solvedIds.has(p.id)).length;
+      const countTotalInTier = (t) => PROBLEMS.filter(p => p.tier === t).length;
+
+      document.getElementById("badgeAll").textContent = `${state.solvedIds.size}/${PROBLEMS.length}`;
+      for (let t = 1; t <= 4; t++) {
+        document.getElementById(`badgeT${t}`).textContent = `${countSolvedInTier(t)}/${countTotalInTier(t)}`;
+      }
+    }
+
+    function renderStageGrid() {
+      stageGridEl.innerHTML = "";
+      PROBLEMS.forEach((prob, idx) => {
+        if (state.currentTierFilter !== "all" && String(prob.tier) !== state.currentTierFilter) {
+          return;
+        }
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "stage-chip";
+        if (idx === state.currentProblemIndex) btn.classList.add("current");
+        if (state.solvedIds.has(prob.id)) btn.classList.add("solved");
+        btn.textContent = prob.code.replace("ข้อ ", "");
+        btn.title = prob.title;
+        btn.addEventListener("click", () => {
+          loadProblem(idx);
+        });
+        stageGridEl.appendChild(btn);
+      });
+    }
+
+    function renderMathFormula(prob) {
+      mathDisplayEl.innerHTML = `
+        <div class="math-expr">
+          <div class="lim-block">
+            <span>lim</span>
+            <span class="lim-sub">${prob.limitPoint}</span>
+          </div>
+          <div class="frac">
+            <div class="frac-num">${prob.numerator}</div>
+            <div class="frac-den">${prob.denominator}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSlots() {
+      const prob = getCurrentProblem();
+
+      // Active highlight
+      slot1El.classList.toggle("active-slot", state.activeSlot === 1);
+      slot2El.classList.toggle("active-slot", state.activeSlot === 2);
+      slot1El.classList.toggle("filled", Boolean(state.slot1Path));
+      slot2El.classList.toggle("filled", Boolean(state.slot2Path));
+
+      // Slot 1 content
+      if (state.slot1Path) {
+        const meta = PATH_CARDS_META[state.slot1Path];
+        const pathData = prob.paths[state.slot1Path];
+        slot1StatusEl.textContent = "วางการ์ดแล้ว";
+        slot1BodyEl.innerHTML = `
+          <div class="slot-path-title">${meta.formula}</div>
+          <div class="slot-path-desc">${pathData.work}</div>
+        `;
+        slot1LimitEl.textContent = pathData.val;
+      } else {
+        slot1StatusEl.textContent = state.activeSlot === 1 ? "กำลังเลือกช่องนี้..." : "คลิกเพื่อเลือก";
+        slot1BodyEl.innerHTML = `
+          <div class="slot-path-title" style="color: var(--muted);">— เลือกเส้นทาง C₁ —</div>
+          <div class="slot-path-desc">คลิกการ์ดจากสำรับด้านล่าง</div>
+        `;
+        slot1LimitEl.textContent = "?";
+      }
+
+      // Slot 2 content
+      if (state.slot2Path) {
+        const meta = PATH_CARDS_META[state.slot2Path];
+        const pathData = prob.paths[state.slot2Path];
+        slot2StatusEl.textContent = "วางการ์ดแล้ว";
+        slot2BodyEl.innerHTML = `
+          <div class="slot-path-title">${meta.formula}</div>
+          <div class="slot-path-desc">${pathData.work}</div>
+        `;
+        slot2LimitEl.textContent = pathData.val;
+      } else {
+        slot2StatusEl.textContent = state.activeSlot === 2 ? "กำลังเลือกช่องนี้..." : "คลิกเพื่อเลือก";
+        slot2BodyEl.innerHTML = `
+          <div class="slot-path-title" style="color: var(--muted);">— เลือกเส้นทาง C₂ —</div>
+          <div class="slot-path-desc">คลิกการ์ดจากสำรับด้านล่าง</div>
+        `;
+        slot2LimitEl.textContent = "?";
+      }
+
+      // VS Symbol state
+      vsSymbolEl.className = "vs-circle";
+      if (state.slot1Path && state.slot2Path) {
+        const v1 = prob.paths[state.slot1Path].val;
+        const v2 = prob.paths[state.slot2Path].val;
+        if (v1 !== v2) {
+          vsSymbolEl.textContent = "≠";
+          vsSymbolEl.classList.add("diff");
+          vsTextEl.textContent = "L₁ ≠ L₂";
+        } else {
+          vsSymbolEl.textContent = "=";
+          vsSymbolEl.classList.add("same");
+          vsTextEl.textContent = "L₁ = L₂";
+        }
+        evaluateBtn.disabled = false;
+      } else {
+        vsSymbolEl.textContent = "VS";
+        vsTextEl.textContent = "เปรียบเทียบ";
+        evaluateBtn.disabled = true;
+      }
+    }
+
+    function renderDeck() {
+      const prob = getCurrentProblem();
+      cardsGridEl.innerHTML = "";
+
+      const availablePathKeys = Object.keys(prob.paths);
+      availablePathKeys.forEach((key) => {
+        const meta = PATH_CARDS_META[key];
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `path-card ${meta.type}`;
+        if (state.slot1Path === key || state.slot2Path === key) {
+          card.classList.add("selected");
+        }
+
+        const isUsedIn = state.slot1Path === key && state.slot2Path === key
+          ? "C₁, C₂"
+          : state.slot1Path === key
+          ? "C₁"
+          : state.slot2Path === key
+          ? "C₂"
+          : "";
+
+        card.innerHTML = `
+          <div class="card-tag">
+            <span>${meta.tag}</span>
+            <span style="color: var(--brand);">${isUsedIn}</span>
+          </div>
+          <div class="card-formula">${meta.formula}</div>
+          <div class="card-hint">${meta.name}</div>
+        `;
+
+        card.addEventListener("click", () => {
+          selectPathCard(key);
+        });
+
+        cardsGridEl.appendChild(card);
+      });
+    }
+
+    function selectPathCard(pathKey) {
+      hideFeedback();
+      if (state.activeSlot === 1) {
+        state.slot1Path = pathKey;
+        if (!state.slot2Path) {
+          state.activeSlot = 2;
+        }
+      } else {
+        state.slot2Path = pathKey;
+      }
+      renderSlots();
+      renderDeck();
+    }
+
+    function showFeedback(type, titleHtml, detailText) {
+      feedbackBoxEl.className = `feedback-box show ${type}`;
+      feedbackTitleEl.innerHTML = titleHtml;
+      feedbackDetailEl.textContent = detailText;
+    }
+
+    function hideFeedback() {
+      feedbackBoxEl.className = "feedback-box";
+    }
+
+    function loadProblem(index) {
+      state.currentProblemIndex = index;
+      state.activeSlot = 1;
+      state.slot1Path = null;
+      state.slot2Path = null;
+      hideFeedback();
+
+      const prob = getCurrentProblem();
+      bossTierBadgeEl.className = `tier-badge tier-${prob.tier}`;
+      bossTierBadgeEl.textContent = prob.tierLabel;
+      bossTitleEl.textContent = prob.title;
+      bossDescEl.textContent = prob.tier === 4
+        ? "ตอน ง (โจทย์ท้าทาย): ตัดสินว่าลิมิตไม่มีค่า (หา 2 เส้นทาง) หรือมีค่าจริง (กดใช้ Squeeze Shield)"
+        : "หาคู่เส้นทาง 2 เส้นที่เข้าสู่จุดกำเนิดแล้วให้ค่าลิมิต L₁ ≠ L₂ เพื่อพิสูจน์ว่าลิมิตไม่มีค่า";
+      bossRewardEl.textContent = `+${prob.points} PTS`;
+
+      renderMathFormula(prob);
+      renderSlots();
+      renderDeck();
+      renderStageGrid();
+      updateHeaderAndBadges();
+    }
+
+    // Evaluate Two-Path Attack
+    evaluateBtn.addEventListener("click", () => {
+      const prob = getCurrentProblem();
+      if (!state.slot1Path || !state.slot2Path) return;
+
+      const v1 = prob.paths[state.slot1Path].val;
+      const v2 = prob.paths[state.slot2Path].val;
+
+      if (!prob.dne) {
+        showFeedback(
+          "trap",
+          "⚠️ กับดัก! ลองกี่เส้นทางก็ได้ค่าเท่ากับ 0 เสมอ",
+          "ทุกเส้นทางที่คุณเลือกได้ค่าลิมิตเท่ากันหมด! หากคุณสงสัยว่าฟังก์ชันนี้เป็น 'การ์ดลวง (มีค่าลิมิตจริง)' ให้กดปุ่ม '🛡️ ใช้การ์ด Squeeze Shield' เพื่อพิสูจน์!"
+        );
+        return;
+      }
+
+      if (v1 !== v2) {
+        // Check Degree Matcher bonus
+        const matchedDegree = prob.degreeMatchPaths.includes(state.slot1Path) || prob.degreeMatchPaths.includes(state.slot2Path);
+        const earned = matchedDegree ? prob.points * 2 : prob.points;
+
+        if (!state.solvedIds.has(prob.id)) {
+          state.solvedIds.add(prob.id);
+          state.score += earned;
+        }
+
+        const bonusHtml = matchedDegree ? `<span class="bonus-pill">★ DEGREE MATCHER x2! (+${earned} PTS)</span>` : `<span>(+${earned} PTS)</span>`;
+        showFeedback(
+          "win",
+          `🎉 ทลายลิมิตสำเร็จ! L₁ (${v1}) ≠ L₂ (${v2}) จึงพิสูจน์ว่าลิมิตไม่มีค่า ${bonusHtml}`,
+          prob.explain
+        );
+        updateHeaderAndBadges();
+        renderStageGrid();
+      } else {
+        showFeedback(
+          "lose",
+          `❌ ยังทำลายไม่ได้! ทั้งสองเส้นทางได้ค่าลิมิตเท่ากัน (${v1} = ${v2})`,
+          "การได้ค่าลิมิตเท่ากันตาม 2 เส้นทางนี้ยังไม่เพียงพอ ลองเปลี่ยนการ์ดเส้นทางใบอื่น (สังเกตดีกรีของตัวส่วนให้ดี!)"
+        );
+      }
+    });
+
+    // Squeeze Shield Action
+    squeezeBtn.addEventListener("click", () => {
+      const prob = getCurrentProblem();
+      if (prob.dne) {
+        showFeedback(
+          "lose",
+          "❌ Squeeze Shield ล้มเหลว! บอสตัวนี้ลิมิตไม่มีค่าจริง",
+          "ข้อนี้ลิมิตไม่มีค่า! การได้ค่าเท่ากันบนเส้นตรงบางเส้นไม่ได้แปลว่าลิมิตมีค่า ลองมองหาเส้นตรงความชันอื่นหรือเส้นโค้งพาราโบลา/กำลังสามในสำรับการ์ด"
+        );
+        return;
+      }
+
+      // Open Shield Modal with choices for genuine limit problems
+      shieldOptionsEl.innerHTML = "";
+      prob.shieldChoices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "shield-opt-btn";
+        btn.textContent = choice.text;
+        btn.addEventListener("click", () => {
+          shieldModal.classList.remove("open");
+          if (choice.correct) {
+            if (!state.solvedIds.has(prob.id)) {
+              state.solvedIds.add(prob.id);
+              state.score += prob.points;
+            }
+            showFeedback(
+              "win",
+              `🛡️ จับผิดการ์ดลวงสำเร็จ! ลิมิตมีค่าเท่ากับ ${prob.trueLimit} (+${prob.points} PTS)`,
+              prob.explain
+            );
+            updateHeaderAndBadges();
+            renderStageGrid();
+          } else {
+            showFeedback(
+              "lose",
+              "❌ เหตุผลในการพิสูจน์ยังไม่ถูกต้อง!",
+              "แม้ฟังก์ชันนี้จะมีค่าลิมิตจริง แต่การให้เหตุผลต้องอ้างอิงทฤษฎีบทบีบ (Squeeze Theorem) หรือการจัดรูปบนโดเมนที่ถูกต้อง ลองกด Squeeze Shield อีกครั้ง"
+            );
+          }
+        });
+        shieldOptionsEl.appendChild(btn);
+      });
+
+      shieldModal.classList.add("open");
+    });
+
+    // Clear Slots
+    clearSlotsBtn.addEventListener("click", () => {
+      state.slot1Path = null;
+      state.slot2Path = null;
+      state.activeSlot = 1;
+      hideFeedback();
+      renderSlots();
+      renderDeck();
+    });
+
+    // Hint
+    hintBtn.addEventListener("click", () => {
+      const prob = getCurrentProblem();
+      showFeedback("trap", "💡 คำใบ้จากนักล่าเส้นทาง:", prob.hint);
+    });
+
+    // Next Stage
+    nextStageBtn.addEventListener("click", () => {
+      const nextIdx = (state.currentProblemIndex + 1) % PROBLEMS.length;
+      loadProblem(nextIdx);
+    });
+
+    // Slot Clicking
+    slot1El.addEventListener("click", () => {
+      state.activeSlot = 1;
+      renderSlots();
+    });
+
+    slot2El.addEventListener("click", () => {
+      state.activeSlot = 2;
+      renderSlots();
+    });
+
+    // Tier Tabs Filtering
+    tierTabsEl.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tier-btn");
+      if (!btn) return;
+      document.querySelectorAll(".tier-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.currentTierFilter = btn.dataset.tier;
+
+      // Jump to first problem of that tier if current problem isn't in it
+      if (state.currentTierFilter !== "all") {
+        const firstIdx = PROBLEMS.findIndex(p => String(p.tier) === state.currentTierFilter);
+        if (firstIdx !== -1) {
+          loadProblem(firstIdx);
+          return;
+        }
+      }
+      renderStageGrid();
+    });
+
+    // Modals close
+    closeShieldModalBtn.addEventListener("click", () => shieldModal.classList.remove("open"));
+    openRulesBtn.addEventListener("click", () => rulesModal.classList.add("open"));
+    closeRulesModalBtn.addEventListener("click", () => rulesModal.classList.remove("open"));
+
+    window.addEventListener("click", (e) => {
+      if (e.target === shieldModal) shieldModal.classList.remove("open");
+      if (e.target === rulesModal) rulesModal.classList.remove("open");
+    });
+
+    // Initialize Game
+    loadProblem(0);
+  </script>
+</body>
+</html>
