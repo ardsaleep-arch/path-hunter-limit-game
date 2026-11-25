@@ -1450,6 +1450,7 @@
       activeSlot: 1, // 1 or 2
       slot1Path: null,
       slot2Path: null,
+      revealed: false, // ค่าลิมิตจะเปิดเผยหลังกดประลองเท่านั้น
       solvedIds: new Set(),
       score: 0
     };
@@ -1558,11 +1559,16 @@
         const meta = PATH_CARDS_META[state.slot1Path];
         const pathData = prob.paths[state.slot1Path];
         slot1StatusEl.textContent = "วางการ์ดแล้ว";
-        slot1BodyEl.innerHTML = `
+        slot1BodyEl.innerHTML = state.revealed
+          ? `
           <div class="slot-path-title">${meta.formula}</div>
           <div class="slot-path-desc">${pathData.work}</div>
+        `
+          : `
+          <div class="slot-path-title">${meta.formula}</div>
+          <div class="slot-path-desc">🔒 ค่าลิมิตจะถูกเปิดเผยหลังกด "ประลองค่าลิมิต"</div>
         `;
-        slot1LimitEl.textContent = pathData.val;
+        slot1LimitEl.textContent = state.revealed ? pathData.val : "?";
       } else {
         slot1StatusEl.textContent = state.activeSlot === 1 ? "กำลังเลือกช่องนี้..." : "คลิกเพื่อเลือก";
         slot1BodyEl.innerHTML = `
@@ -1577,11 +1583,16 @@
         const meta = PATH_CARDS_META[state.slot2Path];
         const pathData = prob.paths[state.slot2Path];
         slot2StatusEl.textContent = "วางการ์ดแล้ว";
-        slot2BodyEl.innerHTML = `
+        slot2BodyEl.innerHTML = state.revealed
+          ? `
           <div class="slot-path-title">${meta.formula}</div>
           <div class="slot-path-desc">${pathData.work}</div>
+        `
+          : `
+          <div class="slot-path-title">${meta.formula}</div>
+          <div class="slot-path-desc">🔒 ค่าลิมิตจะถูกเปิดเผยหลังกด "ประลองค่าลิมิต"</div>
         `;
-        slot2LimitEl.textContent = pathData.val;
+        slot2LimitEl.textContent = state.revealed ? pathData.val : "?";
       } else {
         slot2StatusEl.textContent = state.activeSlot === 2 ? "กำลังเลือกช่องนี้..." : "คลิกเพื่อเลือก";
         slot2BodyEl.innerHTML = `
@@ -1593,7 +1604,11 @@
 
       // VS Symbol state
       vsSymbolEl.className = "vs-circle";
-      if (state.slot1Path && state.slot2Path) {
+      if (state.slot1Path && state.slot2Path && !state.revealed) {
+        vsSymbolEl.textContent = "?";
+        vsTextEl.textContent = "พร้อมประลอง";
+        evaluateBtn.disabled = false;
+      } else if (state.slot1Path && state.slot2Path) {
         const v1 = prob.paths[state.slot1Path].val;
         const v2 = prob.paths[state.slot2Path].val;
         if (v1 !== v2) {
@@ -1654,6 +1669,7 @@
 
     function selectPathCard(pathKey) {
       hideFeedback();
+      state.revealed = false;
       if (state.activeSlot === 1) {
         state.slot1Path = pathKey;
         if (!state.slot2Path) {
@@ -1681,6 +1697,7 @@
       state.activeSlot = 1;
       state.slot1Path = null;
       state.slot2Path = null;
+      state.revealed = false;
       hideFeedback();
 
       const prob = getCurrentProblem();
@@ -1706,6 +1723,10 @@
 
       const v1 = prob.paths[state.slot1Path].val;
       const v2 = prob.paths[state.slot2Path].val;
+
+      // เปิดเผยค่าลิมิตของทั้งสองเส้นทางหลังประลอง
+      state.revealed = true;
+      renderSlots();
 
       if (!prob.dne) {
         showFeedback(
@@ -1795,6 +1816,7 @@
       state.slot1Path = null;
       state.slot2Path = null;
       state.activeSlot = 1;
+      state.revealed = false;
       hideFeedback();
       renderSlots();
       renderDeck();
